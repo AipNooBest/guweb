@@ -139,6 +139,7 @@ cython_debug/
 
 # Project specific
 config.py
+ext/*
 .vscode/
 .data/*
 !.data/backgrounds/.gitkeep

@@ -229,6 +229,49 @@ new Vue({
                     return 3;
             }
         },
+        InttoModeStr(modvalue) {
+            const mods = {
+                Mirror: 1073741824,
+                ScoreV2: 536870912,
+                Key2: 268435456,
+                Key3: 134217728,
+                Key1: 67108864,
+                KeyCoop: 33554432,
+                Key9: 16777216,
+                Target: 8388608,
+                Cinema: 4194304,
+                Random: 2097152,
+                FadeIn: 1048576,
+                Key8: 524288,
+                Key7: 262144,
+                Key6: 131072,
+                Key5: 65536,
+                Key4: 32768,
+                PF: 16384,
+                AP: 8192,
+                SO: 4096,
+                Auto: 2048,
+                FL: 1024,
+                NC: 512,
+                HT: 256,
+                RX: 128,
+                DT: 64,
+                SD: 32,
+                HR: 16,
+                HD: 8,
+                TouchDevice: 4,
+                EZ: 2,
+                NF: 1,
+            }
+            let result = ""
+            for (const [mod, value] of Object.entries(mods)) {
+                if (value <= modvalue) {
+                    modvalue = modvalue % value
+                    result = mod + result
+                }
+            }
+            return result
+        },
     },
     computed: {}
 });

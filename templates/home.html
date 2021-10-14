@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Home {% endblock %}
+{% block title %} Домашняя {% endblock %}
 
 {% block header %}
 <link rel="stylesheet" href="/static/css/pages/home.css">
@@ -15,16 +15,16 @@
       <div class='noti-col noti-col-label'>
         <div class='noti-bannertype'>
           {% if status=='error' %}
-          Warning
+          Ошибка
           {% elif status=='success' %}
-          Notice
+          Внимание
           {% endif %}
         </div>
         <div class='noti-bannertext'>
           {% if status=='error' %}
-          Uh oh! Be careful!
+          Ой-ой! Аккуратнее!
           {% elif status=='success' %}
-          Hey! Listen!
+          Эй! Слушай!
           {% endif %}
         </div>
       </div>
@@ -42,19 +42,19 @@
       <div class="column flex-vcenter flex-lcenter is-size-2-desktop is-size-1-fullhd" id="title">
         <h1 class="title is-spaced is-size-2-desktop is-size-1-fullhd">{{ appName() }}</h1>
         <h2 class="subtitle">
-          We are an osu! private server built from the ground up with many
-          unique features not seen elsewhere - for more information, check
-          out <a href="http://github.com/cmyui/gulag">gulag</a>
-          and <a href="https://github.com/Varkaria/guweb">guweb</a>
-          on GitHub - we're fully open source!
+          Добро пожаловать на приватный сервер {{ appName() }}, построенный на базе
+          <a href="https://github.com/cmyui/gulag">нового ядра</a> от cmyui с
+          кучей уникальных фич. Исходный код открыт, а это значит, что вы
+          можете посмотреть на <a href="https://github.com/AipNooBest/gulag">наше ядро</a>
+            и <a href="https://github.com/AipNooBest/guweb">фронтенд</a> на GitHub!
         </h2>
         {% if not session.authenticated %}
         <div class="buttons">
           <a class="button is-primary" href="/register">
-            <strong>Sign up</strong>
+            <strong>Регистрация</strong>
           </a>
           <a class="button is-light" href="/login">
-            Log in
+            Вход
           </a>
         </div>
         {% endif %}
@@ -68,7 +68,7 @@
 
 <section class="section">
   <div class="container has-text-centered py-4">
-    <h2 class="title mb-6">Some of our coolest features</h2>
+    <h2 class="title mb-6">Самые классные фичи</h2>
     <div class="columns has-text-left mb-6">
       <div class="column is-4">
         <div class="columns">
@@ -76,10 +76,11 @@
             <i class="image is-32x32 fas fa-address-card"></i>
           </div>
           <div class="column is-10">
-            <h4 class="title is-spaced is-4">PP for Relax and Autopilot</h4>
-            <p class="subtitle is-6">Our server has unique pp formula for relax and autopilot.
-              Good at waving your cursor or just smashing your keyboard? Join {{ appName() }} and get a fair reward for
-              your skills!
+            <h4 class="title is-spaced is-4">PP для Relax и AutoPilot</h4>
+            <p class="subtitle is-6">На нашем сервере стоит полноценная PP система для Relax и AutoPilot.
+              Умеете хорошо попадать, но не умеете прожимать или наоборот? Присоединяйтесь к {{ appName() }} и получите
+              заслуженную награду за ваш навык! Более того, система работает наравне с Vanilla, этим наш сервер
+                отличается от, например, Akatsuki.
             </p>
           </div>
         </div>
@@ -90,12 +91,9 @@
             <i class="image is-32x32 fas fa-ambulance"></i>
           </div>
           <div class="column is-10">
-            <h4 class="title is-spaced is-4">Free osu!direct</h4>
-            <p class="subtitle is-6">You won't have to pay for osu!supporter to have a convenient gameplay experience in
-              the
-              client - osu!direct is available for everyone! Keep in mind supporting us still grants a huge set of cool
-              perks but
-              absense of it doesn't affect your game sessions!</p>
+            <h4 class="title is-spaced is-4">Бесплатный osu!direct</h4>
+            <p class="subtitle is-6">Вам не нужно платить за osu!supporter, чтобы иметь полный доступ ко всем
+              клиентским плюшкам типа osu!direct. Теперь он доступен для всех желающих!</p>
           </div>
         </div>
       </div>
@@ -105,9 +103,11 @@
             <i class="image is-32x32 fas fa-archive"></i>
           </div>
           <div class="column is-10">
-            <h4 class="title is-spaced is-4">Flexible library</h4>
-            <p class="subtitle is-6">We're written on top of cmyui's multipurpose library allowing for a fully
-              asynchronous environment, both improving performance and the user's experience in the long term!</p>
+            <h4 class="title is-spaced is-4">Полу-анархия в рейтинге</h4>
+            <p class="subtitle is-6">Мы постоянно меняем PP систему в сторону баффов или нерфов исключительно ради
+              забавных и интересных результатов. Не любите, что циферки получают только за 1-2?
+                Наша система убрала наказание за миссы и слайдербрейки(но усилила влияние точности),
+             так что теперь вы можете получить заслуженные PP за просто прохождение сложных карт!</p>
           </div>
         </div>
       </div>
@@ -119,12 +119,11 @@
 <section class="hero splash">
   <div class="hero-body">
     <div class="container has-text-centered">
-      <h1 class="title is-spaced">What are you waiting for?</h1>
-      <h2 class="subtitle">Join {{ appName() }}! It's risk-free! You won't get your account banned on official servers
-        if
-        you play here with us! And don't worry, as you can always switch between the official servers and us at any time!</h2>
-      <div class="buttons is-centered"><a class="control button is-primary" href="/register">Sign up for free</a><a
-          class="control button is-light" href="/login">Login</a></div>
+      <h1 class="title is-spaced">Чего же ты ждёшь?</h1>
+      <h2 class="subtitle">Присоединяйся к {{ appName() }}! Твой аккаунт не забанят на официальном сервере за игру с нами,
+          а переключиться между нашим сервером и официальным проще простого!</h2>
+      <div class="buttons is-centered"><a class="control button is-primary" href="/register">Зарегистрироваться</a><a
+          class="control button is-light" href="/login">Войти</a></div>
     </div>
   </div>
 </section>
