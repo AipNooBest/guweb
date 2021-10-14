@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Leaderboard {% endblock %}
+{% block title %} Таблица лидеров {% endblock %}
 
 {% block header %}
 <script src="/static/js/asserts/vue.js"></script>
@@ -36,13 +36,13 @@
                 <i class="mode-icon mode-mania"></i><span class="modetext"> osu!mania</span>
             </a>
         </div>
-        <div class="banner-text">Leaderboard</div>
+        <div class="banner-text">Таблица лидеров</div>
         <div class="selector">
             <div class="left">
                 <a class="simple-banner-switch" v-bind:class="{ 'active': sort === 'pp' }"
                 @click="LoadLeaderboard('pp', mode, mods, '')">PP</a>
                 <a class="simple-banner-switch" v-bind:class="{ 'active': sort === 'rscore' }"
-                @click="LoadLeaderboard('rscore', mode, mods, '')">Score</a>
+                @click="LoadLeaderboard('rscore', mode, mods, '')">Счёт</a>
             </div>
             <div class="right">
                 <a class="simple-banner-switch" v-bind:class=" { 'active': mods === 'vn' }"
@@ -66,9 +66,9 @@
                                 <% (sort=='pp' ? "PP" : "" ) %>
                                     <% (sort=='rscore' ? "Score" : "" ) %>
                             </th>
-                            <th class="t-heading"> Accuracy </th>
-                            <th class="t-heading"> Playcount </th>
-                            <th class="t-heading"> Max Combo </th>
+                            <th class="t-heading"> Точность </th>
+                            <th class="t-heading"> Кол-во игр </th>
+                            <th class="t-heading"> Макс. комбо </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,7 +106,7 @@
             </div>
             <div v-else>
                 <div class="text-center">
-                    there are no players to display!
+                    Нет игроков для отображения!
                 </div>
             </div>
         </div>
