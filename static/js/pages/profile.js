@@ -4,20 +4,40 @@ new Vue({
     data() {
         return {
             data: {
-                stats: {},
+                stats: {
+                    out: [{}],
+                    load: true
+                },
                 grades: {},
                 scores: {
-                    recent: {},
-                    best: {},
-                    most: {},
-                    load: [true,true,true]
+                    recent: {
+                        out: [],
+                        load: true,
+                        more: {
+                            limit: 5,
+                            full: true
+                        }
+                    },
+                    best: {
+                        out: [],
+                        load: true,
+                        more: {
+                            limit: 5,
+                            full: true
+                        }
+                    }
                 },
-                loadmore: {
-                    limit: [5,5,6],
-                    full: [true,true,true]
+                maps: {
+                    most: {
+                        out: [],
+                        load: true,
+                        more: {
+                            limit: 5,
+                            full: true
+                        }
+                    }
                 },
-                status: {},
-                load: false
+                status: {}
             },
             mode: mode,
             mods: mods,
@@ -39,37 +59,47 @@ new Vue({
             this.LoadScores('recent');
         },
         LoadProfileData() {
-            this.data.load = false
+            this.$set(this.data.stats, 'load', true);
             this.$axios.get(`${window.location.protocol}//osu.${domain}/api/get_player_info`, {
-                params: {id: this.userid, scope: 'all'}
-            })
+                    params: {
+                        id: this.userid,
+                        scope: 'all'
+                    }
+                })
                 .then(res => {
-                    this.$set(this.data, 'stats', res.data.player.stats)
-                    this.data.load = true
+                    this.$set(this.data.stats, 'out', res.data.player.stats);
+                    this.data.stats.load = false;
                 });
         },
         LoadScores(sort) {
-            let type;
-            if (sort === 'best') { type = 0 } else { type = 1 }
-            this.$set(this.data.scores.load, type, true)
+            this.$set(this.data.scores[`${sort}`], 'load', true);
             this.$axios.get(`${window.location.protocol}//osu.${domain}/api/get_player_scores`, {
-                params: {id: this.userid, mode: this.StrtoGulagInt(), scope: sort, limit: this.data.loadmore.limit[type]}
-            })
+                    params: {
+                        id: this.userid,
+                        mode: this.StrtoGulagInt(),
+                        scope: sort,
+                        limit: this.data.scores[`${sort}`].more.limit
+                    }
+                })
                 .then(res => {
-                    this.data.scores[sort] = res.data.scores;
-                    this.data.scores.load[type] = false
-                    this.data.loadmore.full[type] = res.data.scores.length !== this.data.loadmore.limit[type];
+                    this.data.scores[`${sort}`].out = res.data.scores;
+                    this.data.scores[`${sort}`].load = false
+                    this.data.scores[`${sort}`].more.full = this.data.scores[`${sort}`].out.length != this.data.scores[`${sort}`].more.limit;
                 });
         },
         LoadMostBeatmaps() {
-            this.$set(this.data.scores.load, 2, true)
+            this.$set(this.data.maps.most, 'load', true);
             this.$axios.get(`${window.location.protocol}//osu.${domain}/api/get_player_most_played`, {
-                params: {id: this.userid, mode: this.StrtoGulagInt(), limit: this.data.loadmore.limit[2]}
-            })
+                    params: {
+                        id: this.userid,
+                        mode: this.StrtoGulagInt(),
+                        limit: this.data.maps.most.more.limit
+                    }
+                })
                 .then(res => {
-                    this.data.scores.most = res.data.maps;
-                    this.data.scores.load[2] = false;
-                    this.data.loadmore.full[2] = res.data.maps.length !== this.data.loadmore.limit[2];
+                    this.data.maps.most.out = res.data.maps;
+                    this.data.maps.most.load = false;
+                    this.data.maps.most.more.full = this.data.maps.most.out.length != this.data.maps.most.more.limit;
                 });
         },
         LoadUserStatus() {
@@ -88,43 +118,64 @@ new Vue({
             loop = setTimeout(this.LoadUserStatus, 5000);
         },
         ChangeModeMods(mode, mods) {
-            if (window.event) { window.event.preventDefault() }
-            this.mode = mode; this.mods = mods;
-            this.modegulag = this.StrtoGulagInt()
-            this.data.loadmore.limit = [5,5,6]
-            this.LoadAllofdata()
+            if (window.event)
+                window.event.preventDefault();
+
+            this.mode = mode;
+            this.mods = mods;
+
+            this.modegulag = this.StrtoGulagInt();
+            this.data.scores.recent.more.limit = 5
+            this.data.scores.best.more.limit = 5
+            this.data.maps.most.more.limit = 6
+            this.LoadAllofdata();
         },
         AddLimit(which) {
             if (window.event)
                 window.event.preventDefault();
 
             if (which == 'bestscore') {
-                this.data.loadmore.limit[0] = this.data.loadmore.limit[0] + 5
-                this.LoadScores('best')
+                this.data.scores.best.more.limit += 5;
+                this.LoadScores('best');
             } else if (which == 'recentscore') {
-                this.data.loadmore.limit[1] = this.data.loadmore.limit[1] + 5
-                this.LoadScores('recent')
-            }
-            else if (which == 'mostplay') {
-                this.data.loadmore.limit[2] = this.data.loadmore.limit[2] + 4
-                this.LoadMostBeatmaps()
+                this.data.scores.recent.more.limit += 5;
+                this.LoadScores('recent');
+            } else if (which == 'mostplay') {
+                this.data.maps.most.more.limit += 4;
+                this.LoadMostBeatmaps();
             }
         },
-        ActionIntToStr(d) {
-            if (d.action == 0) {return 'Idle: 🔍 Selecting a song'}
-            else if (d.action == 1) {return 'Idle: 🌙 AFK'}
-            else if (d.action == 2) {return 'Playing: 🎶 '+ d.info_text}
-            else if (d.action == 3) {return 'Editing: 🔨 '+ d.info_text}
-            else if (d.action == 4) {return 'Modding: 🔨 '+ d.info_text}
-            else if (d.action == 5) {return 'In Multiplayer: Selecting 🏯 ' + d.info_text + ' ⛔️'}
-            else if (d.action == 12) {return 'In Multiplayer: Playing 🌍 '+ d.info_text + ' 🎶'}
-            else if (d.action == 6) {return 'Watching: 👓 '+ d.info_text}
-            else if (d.action == 8) {return 'Testing: 🎾 '+ d.info_text}
-            else if (d.action == 9) {return 'Submitting: 🧼 '+ d.info_text}
-            else if (d.action == 10) {return 'Paused: 🚫 '+ d.info_text}
-            else if (d.action == 11) {return 'Idle: 🏢 In multiplayer lobby'}
-            else if (d.action == 13) {return 'Idle: 🫒 Downloading some beatmaps in osu!direct'}
-            else {return 'Unknown: 🚔 not yet implemented!'}
+        actionIntToStr(d) {
+            switch (d.action) {
+                case 0:
+                    return 'Idle: 🔍 Song Select';
+                case 1:
+                    return '🌙 AFK';
+                case 2:
+                    return `Playing: 🎶 ${d.info_text}`;
+                case 3:
+                    return `Editing: 🔨 ${d.info_text}`;
+                case 4:
+                    return `Modding: 🔨 ${d.info_text}`;
+                case 5:
+                    return 'In Multiplayer: Song Select';
+                case 6:
+                    return `Watching: 👓 ${d.info_text}`;
+                    // 7 not used
+                case 8:
+                    return `Testing: 🎾 ${d.info_text}`;
+                case 9:
+                    return `Submitting: 🧼 ${d.info_text}`;
+                    // 10 paused, never used
+                case 11:
+                    return 'Idle: 🏢 In multiplayer lobby';
+                case 12:
+                    return `In Multiplayer: Playing 🌍 ${d.info_text} 🎶`;
+                case 13:
+                    return 'Idle: 🔍 Searching for beatmaps in osu!direct';
+                default:
+                    return 'Unknown: 🚔 not yet implemented!';
+            }
         },
         addCommas(nStr) {
             nStr += '';
@@ -145,30 +196,72 @@ new Vue({
             return dDisplay + hDisplay + mDisplay;
         },
         StrtoGulagInt() {
-            m = this.mode; e = this.mods
-            if (m == 'std' && e == 'vn') { return 0 }
-            else if (m == 'taiko' && e == 'vn') { return 1 }
-            else if (m == 'catch' && e == 'vn') { return 2 }
-            else if (m == 'mania' && e == 'vn') { return 3 }
-            else if (m == 'std' && e == 'rx') { return 4 }
-            else if (m == 'taiko' && e == 'rx') { return 5 }
-            else if (m == 'catch' && e == 'rx') { return 6 }
-            else if (m == 'std' && e == 'ap') { return 7 }
-            else { return -1 }
+            switch (this.mode + "|" + this.mods) {
+                case 'std|vn':
+                    return 0;
+                case 'taiko|vn':
+                    return 1;
+                case 'catch|vn':
+                    return 2;
+                case 'mania|vn':
+                    return 3;
+                case 'std|rx':
+                    return 4;
+                case 'taiko|rx':
+                    return 5;
+                case 'catch|rx':
+                    return 6;
+                case 'std|ap':
+                    return 7;
+                default:
+                    return -1;
+            }
         },
         StrtoModeInt() {
-            m = this.mode; e = this.mods
-            if (m == 'std') { return 0 }
-            else if (m == 'taiko') { return 1 }
-            else if (m == 'catch') { return 2 }
-            else if (m == 'mania') { return 3 }
+            switch (this.mode) {
+                case 'std':
+                    return 0;
+                case 'taiko':
+                    return 1;
+                case 'catch':
+                    return 2;
+                case 'mania':
+                    return 3;
+            }
         },
         InttoModeStr(modvalue) {
             const mods = {
-                Mirror: 1073741824,ScoreV2: 536870912,Key2: 268435456,Key3: 134217728,Key1: 67108864,KeyCoop: 33554432,
-                Key9: 16777216,Target: 8388608,Cinema: 4194304,Random: 2097152,FadeIn: 1048576,Key8: 524288,Key7: 262144,
-                Key6: 131072,Key5: 65536,Key4: 32768,PF: 16384,AP: 8192,SO: 4096,Auto: 2048,FL: 1024,NC: 512,HT: 256,
-                RX: 128,DT: 64,SD: 32,HR: 16,HD: 8,TouchDevice: 4,EZ: 2,NF: 1,
+                Mirror: 1073741824,
+                ScoreV2: 536870912,
+                Key2: 268435456,
+                Key3: 134217728,
+                Key1: 67108864,
+                KeyCoop: 33554432,
+                Key9: 16777216,
+                Target: 8388608,
+                Cinema: 4194304,
+                Random: 2097152,
+                FadeIn: 1048576,
+                Key8: 524288,
+                Key7: 262144,
+                Key6: 131072,
+                Key5: 65536,
+                Key4: 32768,
+                PF: 16384,
+                AP: 8192,
+                SO: 4096,
+                Auto: 2048,
+                FL: 1024,
+                NC: 512,
+                HT: 256,
+                RX: 128,
+                DT: 64,
+                SD: 32,
+                HR: 16,
+                HD: 8,
+                TouchDevice: 4,
+                EZ: 2,
+                NF: 1,
             }
             let result = ""
             for (const [mod, value] of Object.entries(mods)) {
