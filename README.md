@@ -1,12 +1,18 @@
 Table of Contents
 ==================
 - [Table of Contents](#table-of-contents)
+  - [What is this fork?](#what-is)
   - [What is guweb?](#what-is-guweb)
   - [Requirements](#requirements)
   - [Setup](#setup)
   - [Directory Structure](#directory-structure)
   - [The team](#the-team)
   - [The End](#the-end)
+
+What is this fork?
+-----
+
+This fork is a modified and translated(to Russian) version of guweb, made specifically for [debiki](https://osu.aipserver.ru/).
 
 What is guweb?
 ------
