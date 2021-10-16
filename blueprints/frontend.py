@@ -35,7 +35,7 @@ def login_required(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
         if not session:
-            return await flash('error', 'You must be logged in to access that page.', 'login')
+            return await flash('error', 'Необходимо залогиниться, чтобы попасть на эту страницу.', 'login')
         return await func(*args, **kwargs)
     return wrapper
 
@@ -63,7 +63,7 @@ async def settings_profile_post():
     new_email = form.get('email', type=str)
 
     if new_name is None or new_email is None:
-        return await flash('error', 'Invalid parameters.', 'home')
+        return await flash('error', 'Некорректные параметры.', 'home')
 
     old_name = session['user_data']['name']
     old_email = session['user_data']['email']
