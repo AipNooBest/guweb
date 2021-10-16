@@ -272,6 +272,10 @@ new Vue({
             }
             return result
         },
+        OffsetTime(dateStr){
+            let date = new Date(dateStr)
+            return date.valueOf() - date.getTimezoneOffset()*1000*60
+        },
     },
     computed: {}
 });

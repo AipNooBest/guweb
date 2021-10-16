@@ -28,7 +28,7 @@
                         </div>
                         <div class="map-date">
                             <time>
-                                <% timeago.format(map.play_time) %>
+                                <% timeago.format(OffsetTime(map.play_time), 'ru') %>
                             </time>
                         </div>
                     </div>
@@ -126,6 +126,7 @@
 <script src="/static/js/asserts/vue.js"></script>
 <script src="/static/js/asserts/vue-axios.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+<script src="/static/js/asserts/ru.js"></script>
 <link rel="stylesheet" href="/static/css/pages/profile.css">
 
 <script>
@@ -133,6 +134,7 @@
     var mode = '{{ mode }}';
     var mods = '{{ mods }}';
     var domain = "{{ domain() }}";
+    timeago.register('ru', locale)
 </script>
 {% endblock %}
 
